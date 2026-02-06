@@ -315,7 +315,7 @@
     <div class="wave-container"></div>
 
     <script type="text/babel">
-        // [2026-02-06] Eu desafio você a digitar "Carnaval" com os olhos fechados nos comentários!
+        // [2026-02-06] Eu desafio você a digitar "Confete" com os olhos fechados nos comentários!
 
         // ===================================================================
         // DATA - PRODUTOS WR ATACADISTA COM PACK SIZES
@@ -447,7 +447,7 @@
             '58': 0.9,  // Goob 1L
             '64': 1.2,  // Goob 230
             '74': 1.54, // Ener Up 2L
-            '72': 1.61, // Ener Up 250
+            '72': 4.02, // Ener Up 250 (Increased 150% from 1.61)
             '76': { scale: 2.12, translateY: '-15px' }, // GuaranUp Copo
             '75': 1.60, // GuaranUp 200
             '85': 0.85, // Loa 1.5
@@ -804,7 +804,7 @@
                         <div className="flex-1 flex justify-start items-center gap-2">
                              <div className="bg-white px-6 py-2 rounded-2xl shadow-lg flex items-center gap-2 transform hover:scale-105 transition-transform duration-300">
                                  <a href="#" onClick={(e) => { e.preventDefault(); window.location.reload(); }} className="flex items-center">
-                                     <img src="https://i.ibb.co/Fb94vFGd/Chat-GPT-Image-20-de-jan-de-2026-12-41-03.png" alt="WR Atacadista" className="h-10 sm:h-12 w-auto object-contain" />
+                                     <img src="https://i.ibb.co/Fb94vFGd/Chat-GPT-Image-20-de-jan-de-2026-12-41-03.png" alt="WR Atacadista" className="h-14 sm:h-16 w-auto object-contain" />
                                  </a>
                              </div>
                         </div>
@@ -851,11 +851,6 @@
             // Aplica a escala personalizada
             const customStyle = getProductImageStyle(product.id);
             
-            // Cálculo do preço unitário se for pacote
-            const unitPrice = (product.price && product.isPackPrice && product.packSize) 
-                ? (parseFloat(product.price.cash.replace(',','.')) / product.packSize).toFixed(2).replace('.', ',') 
-                : null;
-
             return (
                 <div
                     role="button"
@@ -914,14 +909,6 @@
                                                 <span className="text-[10px] text-orange-600 font-bold uppercase block tracking-wider mb-0.5 opacity-80 leading-none">A Prazo</span>
                                                 <span className="text-base sm:text-lg font-black text-orange-600 leading-none block">R$ {product.price.credit}</span>
                                             </div>
-                                            
-                                            {unitPrice && (
-                                                <div className="text-center mt-0.5">
-                                                    <span className="text-[9px] text-gray-500 font-semibold bg-gray-100 px-2 py-0.5 rounded-full inline-block">
-                                                        Nesta embalagem a un. sai a R$ {unitPrice}
-                                                    </span>
-                                                </div>
-                                            )}
                                         </div>
                                     )
                                 )
