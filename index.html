@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Catálogo Verão - WR Atacadista</title>
     
     <!-- Tailwind CSS -->
@@ -45,6 +45,7 @@
             background-color: var(--brand-red);
             position: relative;
             overflow-x: hidden;
+            padding-bottom: 80px;
         }
 
         /* Fundo com toque de verão */
@@ -77,7 +78,6 @@
         #root {
             position: relative;
             z-index: 2;
-            padding-bottom: 200px;
         }
         
         .panel {
@@ -88,13 +88,19 @@
 
         .category-wave-wrapper {
             position: relative;
-            padding: 2.5rem 1.5rem;
+            padding: 1.5rem 0.5rem;
             border-radius: 1.5rem;
             overflow: hidden;
             background-color: var(--brand-green);
             background-image: var(--summer-gradient);
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        @media (min-width: 640px) {
+            .category-wave-wrapper {
+                padding: 2.5rem 1.5rem;
+            }
         }
 
         .category-wave-wrapper::before, .category-wave-wrapper::after {
@@ -198,35 +204,6 @@
             transform: scale(1.03);
         }
         
-        .price-badge {
-            background: white;
-            color: var(--brand-green);
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-weight: 800;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            z-index: 20;
-            border: 2px solid var(--brand-green);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            line-height: 1;
-            min-width: 65px;
-        }
-        .price-badge .label {
-            font-size: 0.55rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1px;
-            color: #555;
-        }
-        .price-badge .value {
-            font-size: 0.95rem;
-        }
-        
         .out-of-stock-overlay {
             position: absolute;
             inset: 0;
@@ -239,17 +216,96 @@
         }
         
         .out-of-stock-badge {
-            background-color: #ef4444;
+            background-color: #ef4444; 
             color: white;
-            padding: 8px 16px;
+            padding: 4px 8px;
             border-radius: 9999px;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.7rem;
             transform: rotate(-10deg);
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             border: 2px solid white;
             text-transform: uppercase;
             letter-spacing: 1px;
+            text-align: center;
+        }
+
+        /* Animações Premium */
+        @keyframes bounce-small {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+        .animate-bounce-small {
+            animation: bounce-small 2s infinite;
+        }
+        
+        @keyframes pulse-soft {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.02); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 3s infinite;
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* Altura ajustada pois não tem mais botão */
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            border-top: 2px solid var(--brand-green);
+        }
+
+        .progress-bar-track {
+            flex-grow: 1;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 99px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-yellow), var(--brand-green));
+            transition: width 0.3s ease-out;
+            position: relative;
+        }
+        
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255,255,255,0) 0%,
+                rgba(255,255,255,0.4) 50%,
+                rgba(255,255,255,0) 100%
+            );
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-text {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--brand-green-darker);
+            margin-bottom: 4px;
         }
 
     </style>
@@ -259,116 +315,87 @@
     <div class="wave-container"></div>
 
     <script type="text/babel">
-        // [2026-01-20] Desafio: Digite "VERÃO" com os olhos fechados nos comentários!
+        // [2026-02-06] Eu desafio você a digitar "Carnaval" com os olhos fechados nos comentários!
 
         // ===================================================================
-        // DATA
+        // DATA - PRODUTOS WR ATACADISTA COM PACK SIZES
         // ===================================================================
-        // NOTA: Dados visuais (imagens/detalhes) trazidos da IgorValen
-        //       Preços mantidos da WR Atacadista
         const MOCK_PRODUCTS = [
-            // --- NOVIDADES Brussels (Sem preço definido na base WR, mantido ativo) ---
-            { id: 'b1', name: 'Brussels Lager 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/bjWqn9kf/lager.jpg', sortOrder: -4, active: true, comingSoon: true },
-            { id: 'b2', name: 'Brussels Ultra 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/5hq6TQHP/ultra.jpg', sortOrder: -3, active: true, comingSoon: true },
-            { id: 'b3', name: 'Brussels Lager L.N', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/0pS9gMP7/49106a-035daaae8dbb473e9e1376a329918759-mv2.avif', sortOrder: -2, active: true, comingSoon: true },
-            { id: 'b4', name: 'Brussels Ultra L.N', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/nqyZj560/49106a-03691b9df5c74efcabe7b4b6526779a2-mv2.avif', sortOrder: -1, active: true, comingSoon: true },
+            // --- NOVIDADES Brussels ---
+            { id: 'b1', name: 'Brussels Lager 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/bjWqn9kf/lager.jpg', sortOrder: -4, active: true, comingSoon: true, packSize: 12, isPackPrice: true },
+            { id: 'b2', name: 'Brussels Ultra 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/5hq6TQHP/ultra.jpg', sortOrder: -3, active: true, comingSoon: true, packSize: 12, isPackPrice: true },
+            { id: 'b3', name: 'Brussels Lager L.N', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/0pS9gMP7/49106a-035daaae8dbb473e9e1376a329918759-mv2.avif', sortOrder: -2, active: true, comingSoon: true, packSize: 12, isPackPrice: true },
+            { id: 'b4', name: 'Brussels Ultra L.N', category: 'Bebidas alcoólicas', details: [{flavor: 'Puro Malte'}], imageUrl: 'https://i.ibb.co/nqyZj560/49106a-03691b9df5c74efcabe7b4b6526779a2-mv2.avif', sortOrder: -1, active: true, comingSoon: true, packSize: 12, isPackPrice: true },
 
-            // --- Bebidas Não Alcoólicas (Visual IgorValen / Preço WR) ---
-            // -- Refrigerantes Goob --
-            { id: '60', name: 'Refrigerante Goob 2L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Uva'}, {flavor: 'Guaraná'}, {flavor: 'Laranja'}, {flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/23PSr9s0/Gemini-Generated-Image-a5jkuba5jkuba5jk.png', sortOrder: 1, active: true, price: { cash: '25,80', credit: '26,30' } },
-            { id: '58', name: 'Refrigerante Goob 1L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Guaraná'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/Z6L113Sv/1768937474288.png', sortOrder: 2, active: true, price: { cash: '19,95', credit: '20,35' } },
-            { id: '64', name: 'Refrigerante Goob 230ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Guaraná'}, {flavor: 'Morango com Limão'}, {flavor: 'Limão'}, {flavor: 'Laranja'}, {flavor: 'Uva'}], imageUrl: 'https://i.ibb.co/Csbp4YJd/1768937683878.png', sortOrder: 3, active: true, price: { cash: '13,86', credit: '14,13' } },
-            
-            // -- Energéticos --
-            { id: '74', name: 'Energético Ener Up 2L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Sabor tradicional'}], imageUrl: 'https://i.ibb.co/8LCtQwjT/ISM-SITE-BANNER-730-X400-ENERUP-2-L-640x400.png', sortOrder: 4, active: true, price: { cash: '36,00', credit: '36,70' } },
-            { id: '72', name: 'Energético Ener Up 250ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/bjbfp4Xh/ISM-SITE-BANNER-730-X400-ENERUP-250-ML-640x400.png', sortOrder: 5, active: true, price: { cash: '32,90', credit: '33,56' } },
-            { id: '73', name: 'Energético Ener Up lata 269 ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}, {flavor: 'Melância'}, {flavor: 'Tropical'}, {flavor: 'Maçã Verde'}, {flavor: 'Frutas Vermelhas'}], imageUrl: 'https://i.ibb.co/Wq8dkqz/1768937912013.png', sortOrder: 6, active: true, price: { cash: '24,85', credit: '25,35' } },
-            { id: '76', name: 'Guaraná + Açaí Guaran Up de Copo 290ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/3mSgbrqw/ISM-SITE-BANNER-730-X400-GUARANUP-COPO-640x400.png', sortOrder: 7, active: true, price: { cash: '28,95', credit: '29,53' } },
-            { id: '75', name: 'Guaraná + Açaí Guaran Up 200ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Y7Rm31tR/ISM-SITE-BANNER-730-X400-GUARANUP-GARRAFA-640x400.png', sortOrder: 8, active: true, price: { cash: '19,00', credit: '19,38' } },
-            
-            // -- Sucos --
-            { id: '79', name: 'Suco Yulo 1,5L Frutas Cítricas', category: 'Bebidas não alcoólicas', details: [{flavor: 'Frutas Cítricas'}], imageUrl: 'https://i.ibb.co/0jPVR7XP/172760-800-auto.webp', sortOrder: 9, active: true, price: { cash: '30,30', credit: '30,90' } },
-            { id: '77', name: 'Suco Yulo 400ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Uva'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/RGJmf393/1768939190446.png', sortOrder: 10, active: true, price: { cash: '23,85', credit: '24,35' } },
-            { id: '80', name: 'Suco Yulo 200 ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Uva'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/Fkxjg2Wq/1768939366828.png', sortOrder: 11, active: true, price: { cash: '17,60', credit: '17,70' } },
-            { id: '82', name: 'Suco de Caixinha Yulo Tetra Park 200ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Laranja e Acerola'}, {flavor: 'Uva'}, {flavor: 'Pêssego'}, {flavor: 'Morango'}, {flavor: 'Frutas Cítricas'}], imageUrl: 'https://i.ibb.co/39ZNBHZY/1768938234848.png', sortOrder: 12, active: true, price: { cash: '37,38', credit: '38,10' } },
-            { id: '70', name: 'Chá Gelado Drink T 300ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Pêssego'}, {flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/5XN7dvCf/Gemini-Generated-Image-fr5a3efr5a3efr5a.png', sortOrder: 13, active: true, price: { cash: '26,30', credit: '26,50' } },
-            
-            // -- Águas --
-            { id: '85', name: 'Água Mineral Lôa 1,5L Sem gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/bgv1DxzH/1768938897965.png', sortOrder: 14, active: true, price: { cash: '13,75', credit: '13,95' } },
-            { id: '86', name: 'Água Mineral Lôa 500ML Sem Gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/tpHbj1yZ/1768938500430.png', sortOrder: 15, active: true, price: { cash: '11,90', credit: '12,15' } },
-            { id: '87', name: 'Água Mineral Lôa 500ML Com gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/YBdRGc2Z/1768938703890.png', sortOrder: 16, active: true, price: { cash: '17,70', credit: '18,05' } },
-            
-            // -- Achocolatado (Movido para depois das águas) --
-            { id: 'new1', name: 'Achocolatado Maratinho', category: 'Bebidas não alcoólicas', details: [{flavor: 'Chocolate'}], imageUrl: 'https://i.ibb.co/W13jj1s/02.png', sortOrder: 17, active: true, price: { cash: '38,73', credit: '39,51' } },
+            // --- Bebidas Não Alcoólicas ---
+            { id: '60', name: 'Refrigerante Goob 2L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Uva'}, {flavor: 'Guaraná'}, {flavor: 'Laranja'}, {flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/23PSr9s0/Gemini-Generated-Image-a5jkuba5jkuba5jk.png', sortOrder: 1, active: true, price: { cash: '25,80', credit: '26,30' }, packSize: 6, isPackPrice: true },
+            { id: '58', name: 'Refrigerante Goob 1L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Guaraná'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/Z6L113Sv/1768937474288.png', sortOrder: 2, active: true, price: { cash: '19,95', credit: '20,35' }, packSize: 6, isPackPrice: true },
+            { id: '64', name: 'Refrigerante Goob 230ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Cola'}, {flavor: 'Guaraná'}, {flavor: 'Morango com Limão'}, {flavor: 'Limão'}, {flavor: 'Laranja'}, {flavor: 'Uva'}], imageUrl: 'https://i.ibb.co/Csbp4YJd/1768937683878.png', sortOrder: 3, active: true, price: { cash: '13,86', credit: '14,13' }, packSize: 12, isPackPrice: true },
+            { id: '74', name: 'Energético Ener Up 2L', category: 'Bebidas não alcoólicas', details: [{flavor: 'Sabor tradicional'}], imageUrl: 'https://i.ibb.co/8LCtQwjT/ISM-SITE-BANNER-730-X400-ENERUP-2-L-640x400.png', sortOrder: 4, active: true, price: { cash: '36,00', credit: '36,70' }, packSize: 6, isPackPrice: true },
+            { id: '72', name: 'Energético Ener Up 250ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/bjbfp4Xh/ISM-SITE-BANNER-730-X400-ENERUP-250-ML-640x400.png', sortOrder: 5, active: true, price: { cash: '32,90', credit: '33,56' }, packSize: 12, isPackPrice: true },
+            { id: '73', name: 'Energético Ener Up lata 269 ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}, {flavor: 'Melância'}, {flavor: 'Tropical'}, {flavor: 'Maçã Verde'}, {flavor: 'Frutas Vermelhas'}], imageUrl: 'https://i.ibb.co/Wq8dkqz/1768937912013.png', sortOrder: 6, active: true, price: { cash: '24,85', credit: '25,35' }, packSize: 6, isPackPrice: true },
+            { id: '76', name: 'Guaraná + Açaí Guaran Up de Copo 290ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/3mSgbrqw/ISM-SITE-BANNER-730-X400-GUARANUP-COPO-640x400.png', sortOrder: 7, active: true, price: { cash: '28,95', credit: '29,53' }, packSize: 24, isPackPrice: true },
+            { id: '75', name: 'Guaraná + Açaí Guaran Up 200ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Y7Rm31tR/ISM-SITE-BANNER-730-X400-GUARANUP-GARRAFA-640x400.png', sortOrder: 8, active: true, price: { cash: '19,00', credit: '19,38' }, packSize: 12, isPackPrice: true },
+            { id: '79', name: 'Suco Yulo 1,5L Frutas Cítricas', category: 'Bebidas não alcoólicas', details: [{flavor: 'Frutas Cítricas'}], imageUrl: 'https://i.ibb.co/0jPVR7XP/172760-800-auto.webp', sortOrder: 9, active: true, price: { cash: '30,30', credit: '30,90' }, packSize: 6, isPackPrice: true },
+            { id: '77', name: 'Suco Yulo 400ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Uva'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/RGJmf393/1768939190446.png', sortOrder: 10, active: true, price: { cash: '23,85', credit: '24,35' }, packSize: 12, isPackPrice: true },
+            { id: '80', name: 'Suco Yulo 200 ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Uva'}, {flavor: 'Laranja'}], imageUrl: 'https://i.ibb.co/Fkxjg2Wq/1768939366828.png', sortOrder: 11, active: true, price: { cash: '17,60', credit: '17,70' }, packSize: 12, isPackPrice: true },
+            { id: '82', name: 'Suco de Caixinha Yulo Tetra Park 200ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Laranja e Acerola'}, {flavor: 'Uva'}, {flavor: 'Pêssego'}, {flavor: 'Morango'}, {flavor: 'Frutas Cítricas'}], imageUrl: 'https://i.ibb.co/39ZNBHZY/1768938234848.png', sortOrder: 12, active: true, price: { cash: '37,38', credit: '38,10' }, packSize: 27, isPackPrice: true },
+            { id: '70', name: 'Chá Gelado Drink T 300ML', category: 'Bebidas não alcoólicas', details: [{flavor: 'Pêssego'}, {flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/5XN7dvCf/Gemini-Generated-Image-fr5a3efr5a3efr5a.png', sortOrder: 13, active: true, price: { cash: '26,30', credit: '26,50' }, packSize: 12, isPackPrice: true },
+            { id: '85', name: 'Água Mineral Lôa 1,5L Sem gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/bgv1DxzH/1768938897965.png', sortOrder: 14, active: true, price: { cash: '13,75', credit: '13,95' }, packSize: 6, isPackPrice: true },
+            { id: '86', name: 'Água Mineral Lôa 500ML Sem Gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/tpHbj1yZ/1768938500430.png', sortOrder: 15, active: true, price: { cash: '11,90', credit: '12,15' }, packSize: 12, isPackPrice: true },
+            { id: '87', name: 'Água Mineral Lôa 500ML Com gás', category: 'Bebidas não alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/YBdRGc2Z/1768938703890.png', sortOrder: 16, active: true, price: { cash: '17,70', credit: '18,05' }, packSize: 12, isPackPrice: true },
+            { id: 'new1', name: 'Achocolatado Maratinho', category: 'Bebidas não alcoólicas', details: [{flavor: 'Chocolate'}], imageUrl: 'https://i.ibb.co/W13jj1s/02.png', sortOrder: 17, active: true, price: { cash: '38,73', credit: '39,51' }, packSize: 27, isPackPrice: true },
 
             // --- Bebidas Alcoólicas ---
-            // -- Família Pitú (Reordenada: Litro, 600ml, Lata) --
-            { id: '1', name: 'Pitu 965ML com papelão', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/B5fHNL2y/aguardente-pitu-965ml-1a515249-2151-4db6-a2e5-57208f6a1803.jpg', sortOrder: 18, active: true, price: { cash: '9,95', credit: '10,10' } },
-            { id: '5', name: 'Pitú de Garrafa 600ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/27yx5ZBb/184178-800-450.webp', sortOrder: 19, active: true, price: { cash: '7,94', credit: '8,10' } },
-            { id: '4', name: 'Pitú Lata 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/6JLTr2Dh/9064.jpg', sortOrder: 20, active: true, price: { cash: '51,70', credit: '52,73' } },
-            
-            // -- Outras Cachaças e Aguardentes --
-            { id: '3', name: 'Cachaça Asa Branca 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/vC07C1rt/D-Q-NP-682768-MLA85665355420-062025-O.webp', sortOrder: 21, active: true, price: { cash: '31,95', credit: '32,59' } },
-            { id: '31', name: 'Cachaça Velho Barreiro 910 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Qj1Sg9ws/10987-cachaca-velho-barreiro-910ml-1un-20250901154933.png', sortOrder: 22, active: true, price: { cash: '15,40', credit: '15,71' } },
-            { id: '23', name: 'Cachaça Paratudo 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/mV5Jcph9/15126653667-1065-amargo-paratudo-900ml.jpg', sortOrder: 23, active: true, price: { cash: '13,15', credit: '13,41' } },
-            { id: '2', name: 'Alcatrão São João da Barra 900 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/PvjZRQcT/134.jpg', sortOrder: 24, active: true, price: { cash: '19,95', credit: '20,35' } },
-            { id: '7', name: 'Canelinha da Rocha 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/4nyHHwMy/3708eb250af525b1f523081bc7116cd6.webp', sortOrder: 25, active: true, price: { cash: '12,50', credit: '12,65' } },
-            { id: '17', name: 'Genebra Dubar Zora 960 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/G4bPGLdH/51r-Oz-Lf4s-ML.jpg', sortOrder: 26, active: true, price: { cash: '25,26', credit: '25,77' } },
-            { id: '18', name: 'Bebida alcoólica Gengibre Vida Nova Verde 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/0V6X2rpH/Gemini-Generated-Image-jd60eajd60eajd60.png', sortOrder: 27, active: true, price: { cash: '7,45', credit: '7,60' } },
-            { id: '9', name: 'Gengibre Pérola da Chapada', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/W46Xfbjn/IMG-0661.jpg', sortOrder: 28, active: true, price: { cash: '7,60', credit: '7,80' } },
-            { id: '20', name: 'Aperitivo Jurubeba Leão do Norte 600 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Cs9Z7Zzs/aperitivo-jurubeba-leao-do-norte-600ml-1959-1-6a7a79b098d66071f5d0ad6a07cacf14.webp', sortOrder: 29, active: true, price: { cash: '13,00', credit: '13,26' } },
+            { id: '1', name: 'Pitu 965ML com papelão', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/B5fHNL2y/aguardente-pitu-965ml-1a515249-2151-4db6-a2e5-57208f6a1803.jpg', sortOrder: 18, active: true, price: { cash: '9,95', credit: '10,10' }, packSize: 12, isPackPrice: false },
+            { id: '5', name: 'Pitú de Garrafa 600ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/27yx5ZBb/184178-800-450.webp', sortOrder: 19, active: true, price: { cash: '7,94', credit: '8,10' }, packSize: 12, isPackPrice: false },
+            { id: '4', name: 'Pitú Lata 350ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/6JLTr2Dh/9064.jpg', sortOrder: 20, active: true, price: { cash: '51,70', credit: '52,73' }, packSize: 12, isPackPrice: true },
+            { id: '3', name: 'Cachaça Asa Branca 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/vC07C1rt/D-Q-NP-682768-MLA85665355420-062025-O.webp', sortOrder: 21, active: true, price: { cash: '31,95', credit: '32,59' }, packSize: 12, isPackPrice: false },
+            { id: '31', name: 'Cachaça Velho Barreiro 910 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Qj1Sg9ws/10987-cachaca-velho-barreiro-910ml-1un-20250901154933.png', sortOrder: 22, active: true, price: { cash: '15,40', credit: '15,71' }, packSize: 12, isPackPrice: false },
+            { id: '23', name: 'Cachaça Paratudo 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/mV5Jcph9/15126653667-1065-amargo-paratudo-900ml.jpg', sortOrder: 23, active: true, price: { cash: '13,15', credit: '13,41' }, packSize: 12, isPackPrice: false },
+            { id: '2', name: 'Alcatrão São João da Barra 900 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/PvjZRQcT/134.jpg', sortOrder: 24, active: true, price: { cash: '19,95', credit: '20,35' }, packSize: 12, isPackPrice: false },
+            { id: '7', name: 'Canelinha da Rocha 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/4nyHHwMy/3708eb250af525b1f523081bc7116cd6.webp', sortOrder: 25, active: true, price: { cash: '12,50', credit: '12,65' }, packSize: 12, isPackPrice: false },
+            { id: '17', name: 'Genebra Dubar Zora 960 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/G4bPGLdH/51r-Oz-Lf4s-ML.jpg', sortOrder: 26, active: true, price: { cash: '25,26', credit: '25,77' }, packSize: 12, isPackPrice: false },
+            { id: '18', name: 'Bebida alcoólica Gengibre Vida Nova Verde 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/0V6X2rpH/Gemini-Generated-Image-jd60eajd60eajd60.png', sortOrder: 27, active: true, price: { cash: '7,45', credit: '7,60' }, packSize: 12, isPackPrice: false },
+            { id: '9', name: 'Gengibre Pérola da Chapada', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/W46Xfbjn/IMG-0661.jpg', sortOrder: 28, active: true, price: { cash: '7,60', credit: '7,80' }, packSize: 12, isPackPrice: false },
+            { id: '20', name: 'Aperitivo Jurubeba Leão do Norte 600 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Cs9Z7Zzs/aperitivo-jurubeba-leao-do-norte-600ml-1959-1-6a7a79b098d66071f5d0ad6a07cacf14.webp', sortOrder: 29, active: true, price: { cash: '13,00', credit: '13,26' }, packSize: 12, isPackPrice: false },
+            { id: '33', name: 'Vodka Natasha 900 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/7xs3PBVR/258980-1.webp', sortOrder: 30, active: true, price: { cash: '16,20', credit: '16,52' }, packSize: 12, isPackPrice: false },
+            { id: '30', name: 'Ice Syn Lemon Ice 300ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/WpjLmXH7/Syn-Ice-300-PET-Limao-25a1a95d.png', sortOrder: 31, active: true, price: { cash: '15,70', credit: '16,01' }, packSize: 6, isPackPrice: true },
+            { id: '88', name: 'Glow Ice 269ML (Lata)', category: 'Bebidas alcoólicas', details: [{flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/YBgGsXmQ/glow-lata-269ml.png', sortOrder: 32, active: true, price: { cash: '24,50', credit: '24,99' }, packSize: 6, isPackPrice: true },
+            { id: '89', name: 'Ice Glow 275 ML (Garrafa de Vidro)', category: 'Bebidas alcoólicas', details: [{flavor: 'Limão'}, {flavor: 'Maracujá'}], imageUrl: 'https://i.ibb.co/4wQKdGtm/file-00000000ec5471f5975d9cc0858c1a91.png', sortOrder: 33, active: true, price: { cash: '26,50', credit: '26,50' }, packSize: 6, isPackPrice: true },
+            { id: '32', name: 'Beefeater London 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/gFc44xhq/Beefeater-London-Dry-Gin-aspect-ratio-320-540.jpg', sortOrder: 34, active: true, price: { cash: '80,50', credit: '81,00' }, packSize: 12, isPackPrice: false },
+            { id: '19', name: 'Jose Cuervo 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/VcRZYDdH/07127902e5b6462da804f886248fe397.webp', sortOrder: 35, active: true, price: { cash: '95,00', credit: '96,90' }, packSize: 12, isPackPrice: false },
+            { id: '21', name: 'Whisky Black Label 1 L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Psf9MdzP/001.webp', sortOrder: 36, active: true, price: { cash: '137,00', credit: '139,74' }, packSize: 12, isPackPrice: false },
+            { id: '29', name: 'Whisky Red Label 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Tq1SbBdG/bo839.png', sortOrder: 37, active: true, price: { cash: '87,50', credit: '89,25' }, packSize: 12, isPackPrice: false },
+            { id: '12', name: 'Whisky White Horse 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/r2B695NC/45018-1.jpg', sortOrder: 38, active: true, price: { cash: '66,50', credit: '67,80' }, packSize: 12, isPackPrice: false },
+            { id: '24', name: 'Whisky Passport Scotch 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Tx12qb5m/51-UYCr-Fpn5-S-UF1000-1000-QL80.jpg', sortOrder: 39, active: true, price: { cash: '41,50', credit: '41,75' }, packSize: 12, isPackPrice: false },
+            { id: '35', name: 'Whisky Black Stone 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/0pnMv0XZ/268299.webp', sortOrder: 40, active: true, price: { cash: '22,90', credit: '23,10' }, packSize: 12, isPackPrice: false },
+            { id: '26', name: 'Conhaque Presidente 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Z6437SW4/9375-conhaque-presidente-900ml.jpg', sortOrder: 41, active: true, price: { cash: '13,50', credit: '13,77' }, packSize: 12, isPackPrice: false },
+            { id: '16', name: 'Conhaque Dreher 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/ksGwKgS8/20240629110719-66801517ad651.webp', sortOrder: 42, active: true, price: { cash: '18,95', credit: '19,33' }, packSize: 12, isPackPrice: false },
+            { id: '15', name: 'Conhaque Domecq Coquetel Composto 1 L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/5h7zC8sB/51-Ir-C0-JN5a-L.jpg', sortOrder: 43, active: true, price: { cash: '34,99', credit: '35,70' }, packSize: 12, isPackPrice: false },
+            { id: '13', name: 'Conhaque Domus', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/XxsjvQkw/6004-conhaque-domus-900ml-20231129151710.jpg', sortOrder: 44, active: true, price: { cash: '11,30', credit: '11,50' }, packSize: 12, isPackPrice: false },
+            { id: '6', name: 'Aperitivo Campari 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/b0T3DPR/10375-aperitivo-bitter-campari-998ml-1un-20250901154933.png', sortOrder: 45, active: true, price: { cash: '55,70', credit: '57,20' }, packSize: 12, isPackPrice: false },
+            { id: '11', name: 'Catuaba Vida Nova 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/j91j5KRh/01-325152-01.webp', sortOrder: 46, active: true, price: { cash: '7,80', credit: '7,96' }, packSize: 12, isPackPrice: false },
+            { id: '27', name: 'Vinho Quinta Morgado 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tinto Suave'}], imageUrl: 'https://i.ibb.co/spJ1bcDy/quinta-do-morgado-tinto-suave-1l.jpg', sortOrder: 47, active: true, price: { cash: '21,25', credit: '21,68' }, packSize: 12, isPackPrice: false },
+            { id: '28', name: 'Vinho Quinta do Morgado Suave 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/j0dGyjr/quinta-do-morgado-tinto-suave.jpg', sortOrder: 48, active: true, price: { cash: '14,45', credit: '14,74' }, packSize: 12, isPackPrice: false },
+            { id: '25', name: 'Vinho Pérgula Tinto Suave 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/pjykdnSp/Vinho-Brasileiro-Pergola-Tinto-Suave-1l.png', sortOrder: 49, active: true, price: { cash: '21,70', credit: '22,13' }, packSize: 12, isPackPrice: false },
+            { id: '34', name: 'Vinho Pérgula 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/mCjMYR6t/12194-1.webp', sortOrder: 50, active: true, price: { cash: '17,80', credit: '18,16' }, packSize: 12, isPackPrice: false },
+            { id: '10', name: 'Vinho Cantina da Serra 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/DfmgKCmx/vinho-coquetel-cantina-da-serra-tinto-suave-embalagem-12x15-lt-preco-unitario-r9-3enygexapi.webp', sortOrder: 51, active: true, price: { cash: '6,00', credit: '6,20' }, packSize: 12, isPackPrice: false },
+            { id: '8', name: 'Vinho Dom Bosco 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/84B2qNSt/vinho-dom-bosco-tinto-suave-1l-1383-1-ad3d44dab6338ab15e7467ca6071e562.webp', sortOrder: 52, active: true, price: { cash: '16,95', credit: '17,29' }, packSize: 12, isPackPrice: false },
+            { id: '92', name: 'Vinho Colheita do Sul 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/3Kdjf2J/l-ea51dada267d48e7a344e61addedfa7b.png', sortOrder: 53, active: true, price: { cash: '17,70', credit: '18,05' }, packSize: 12, isPackPrice: false },
+            { id: '93', name: 'Vinho Chilano 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/7tVsGspt/165239-800-800.png', sortOrder: 54, active: true, price: { cash: '23,50', credit: '23,97' }, packSize: 12, isPackPrice: false },
 
-            // -- Vodkas, Gins e Tequilas --
-            { id: '33', name: 'Vodka Natasha 900 ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/7xs3PBVR/258980-1.webp', sortOrder: 30, active: true, price: { cash: '16,20', credit: '16,52' } },
-            { id: '30', name: 'Ice Syn Lemon Ice 300ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/WpjLmXH7/Syn-Ice-300-PET-Limao-25a1a95d.png', sortOrder: 31, active: true, price: { cash: '15,70', credit: '16,01' } },
-            { id: '88', name: 'Glow Ice 269ML (Lata)', category: 'Bebidas alcoólicas', details: [{flavor: 'Limão'}], imageUrl: 'https://i.ibb.co/YBgGsXmQ/glow-lata-269ml.png', sortOrder: 32, active: true, price: { cash: '24,50', credit: '24,99' } },
-            { id: '89', name: 'Ice Glow 275 ML (Garrafa de Vidro)', category: 'Bebidas alcoólicas', details: [{flavor: 'Limão'}, {flavor: 'Maracujá'}], imageUrl: 'https://i.ibb.co/4wQKdGtm/file-00000000ec5471f5975d9cc0858c1a91.png', sortOrder: 33, active: true, price: { cash: '26,50', credit: '26,50' } },
-            { id: '32', name: 'Beefeater London 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/gFc44xhq/Beefeater-London-Dry-Gin-aspect-ratio-320-540.jpg', sortOrder: 34, active: true, price: { cash: '80,50', credit: '81,00' } },
-            { id: '19', name: 'Jose Cuervo 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/VcRZYDdH/07127902e5b6462da804f886248fe397.webp', sortOrder: 35, active: true, price: { cash: '95,00', credit: '96,90' } },
-
-            // -- Whiskies --
-            { id: '21', name: 'Whisky Black Label 1 L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Psf9MdzP/001.webp', sortOrder: 36, active: true, price: { cash: '137,00', credit: '139,74' } },
-            { id: '29', name: 'Whisky Red Label 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Tq1SbBdG/bo839.png', sortOrder: 37, active: true, price: { cash: '87,50', credit: '89,25' } },
-            { id: '12', name: 'Whisky White Horse 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/r2B695NC/45018-1.jpg', sortOrder: 38, active: true, price: { cash: '66,50', credit: '67,80' } },
-            { id: '24', name: 'Whisky Passport Scotch 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Tx12qb5m/51-UYCr-Fpn5-S-UF1000-1000-QL80.jpg', sortOrder: 39, active: true, price: { cash: '41,50', credit: '41,75' } },
-            { id: '35', name: 'Whisky Black Stone 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/0pnMv0XZ/268299.webp', sortOrder: 40, active: true, price: { cash: '22,90', credit: '23,10' } },
-
-            // -- Conhaques, Catuabas e Aperitivos --
-            { id: '26', name: 'Conhaque Presidente 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Z6437SW4/9375-conhaque-presidente-900ml.jpg', sortOrder: 41, active: true, price: { cash: '13,50', credit: '13,77' } },
-            { id: '16', name: 'Conhaque Dreher 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/ksGwKgS8/20240629110719-66801517ad651.webp', sortOrder: 42, active: true, price: { cash: '18,95', credit: '19,33' } },
-            { id: '15', name: 'Conhaque Domecq Coquetel Composto 1 L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/5h7zC8sB/51-Ir-C0-JN5a-L.jpg', sortOrder: 43, active: true, price: { cash: '34,99', credit: '35,70' } },
-            { id: '13', name: 'Conhaque Domus', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/XxsjvQkw/6004-conhaque-domus-900ml-20231129151710.jpg', sortOrder: 44, active: true, price: { cash: '11,30', credit: '11,50' } },
-            { id: '6', name: 'Aperitivo Campari 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/b0T3DPR/10375-aperitivo-bitter-campari-998ml-1un-20250901154933.png', sortOrder: 45, active: true, price: { cash: '55,70', credit: '57,20' } },
-            { id: '11', name: 'Catuaba Vida Nova 900ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/j91j5KRh/01-325152-01.webp', sortOrder: 46, active: true, price: { cash: '7,80', credit: '7,96' } },
-
-            // -- Vinhos --
-            { id: '27', name: 'Vinho Quinta Morgado 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tinto Suave'}], imageUrl: 'https://i.ibb.co/spJ1bcDy/quinta-do-morgado-tinto-suave-1l.jpg', sortOrder: 47, active: true, price: { cash: '21,25', credit: '21,68' } },
-            { id: '28', name: 'Vinho Quinta do Morgado Suave 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/j0dGyjr/quinta-do-morgado-tinto-suave.jpg', sortOrder: 48, active: true, price: { cash: '14,45', credit: '14,74' } },
-            { id: '25', name: 'Vinho Pérgula Tinto Suave 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/pjykdnSp/Vinho-Brasileiro-Pergola-Tinto-Suave-1l.png', sortOrder: 49, active: true, price: { cash: '21,70', credit: '22,13' } },
-            { id: '34', name: 'Vinho Pérgula 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/mCjMYR6t/12194-1.webp', sortOrder: 50, active: true, price: { cash: '17,80', credit: '18,16' } },
-            { id: '10', name: 'Vinho Cantina da Serra 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/DfmgKCmx/vinho-coquetel-cantina-da-serra-tinto-suave-embalagem-12x15-lt-preco-unitario-r9-3enygexapi.webp', sortOrder: 51, active: true, price: { cash: '6,00', credit: '6,20' } },
-            { id: '8', name: 'Vinho Dom Bosco 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/84B2qNSt/vinho-dom-bosco-tinto-suave-1l-1383-1-ad3d44dab6338ab15e7467ca6071e562.webp', sortOrder: 52, active: true, price: { cash: '16,95', credit: '17,29' } },
-            { id: '92', name: 'Vinho Colheita do Sul 1L', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/3Kdjf2J/l-ea51dada267d48e7a344e61addedfa7b.png', sortOrder: 53, active: true, price: { cash: '17,70', credit: '18,05' } },
-            { id: '93', name: 'Vinho Chilano 750ML', category: 'Bebidas alcoólicas', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/7tVsGspt/165239-800-800.png', sortOrder: 54, active: true, price: { cash: '23,50', credit: '23,97' } },
-
-            // --- Bomboneire / Alimentos ---
-            // -- Balas e Drops --
+            // --- Bomboneire ---
             { id: '36', name: 'Bala Icekiss Sortida 500G', category: 'Bomboneire', details: [{flavor: 'Sortida'}], imageUrl: 'https://i.ibb.co/7dVMMzqJ/bala-dura-icekiss-sortida-500g-16675-1-3b5416d1fada308118535e1796dcd3e3.webp', sortOrder: 55, active: true, price: { cash: '7,90', credit: '8,06' } },
             { id: '38', name: 'Bala Santa Fé Canela 600G', category: 'Bomboneire', details: [{flavor: 'Canela'}], imageUrl: 'https://i.ibb.co/Ds3YDxj/128.jpg', sortOrder: 56, active: true, price: { cash: '9,60', credit: '9,79' } },
             { id: '43', name: 'Bala Santa Fé Mastigável Sortida Frutas 500G', category: 'Bomboneire', details: [{flavor: 'Frutas Sortidas'}], imageUrl: 'https://i.ibb.co/q3CLvQPP/df00043f0bf6a689281a7536ebbdd5d6.webp', sortOrder: 57, active: true, price: { cash: '7,30', credit: '7,45' } },
             { id: '39', name: 'Drops Halls', category: 'Bomboneire', details: [{flavor: 'Extra forte'}, {flavor: 'Melancia'}, {flavor: 'Menta'}, {flavor: 'Hortelã'}, {flavor: 'Cereja'}, {flavor: 'Morango'}], imageUrl: 'https://i.ibb.co/9kh4dc9C/sg-11134201-7qvea-li0fr8iza4l467.jpg', sortOrder: 58, active: true, price: { cash: '24,76', credit: '25,50' } },
-            
-            // -- Chicletes --
             { id: '37', name: 'Chiclete Blong', category: 'Bomboneire', details: [{flavor: 'Framboesa'}, {flavor: 'Hortelã'}, {flavor: 'Morango'}, {flavor: 'Napolitano'}, {flavor: 'Tutti-Frutti'}, {flavor: 'Uva'}], imageUrl: 'https://i.ibb.co/fGt4CMcz/Gemini-Generated-Image-rvylr0rvylr0rvyl.png', sortOrder: 59, active: true, price: { cash: '7,10', credit: '7,25' } },
             { id: '45', name: 'Chiclete Trident', category: 'Bomboneire', details: [{flavor: 'Hortelã'}, {flavor: 'Menta'}, {flavor: 'Morango'}, {flavor: 'Melancia'}, {flavor: 'Tutti-Frutti'}], imageUrl: 'https://i.ibb.co/5hYWG1LZ/Gemini-Generated-Image-he1fa1he1fa1he1f.png', sortOrder: 60, active: true, price: { cash: '37,00', credit: '37,50' } },
             { id: '57', name: 'Chiclete Tattoo Santa Fé', category: 'Bomboneire', details: [{flavor: 'Morango'}, {flavor: 'Hortelã'}], imageUrl: 'https://i.ibb.co/d0sw6kRt/Chat-GPT-Image-20-de-jan-de-2026-15-31-45.png', sortOrder: 61, active: true, price: { cash: '7,85', credit: '8,01' } },
-            
-            // -- Pirulitos --
             { id: '40', name: 'Pirulito Megalito Pinta Língua', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/T9m5zn7/1617230123c7i5abc2cd.png', sortOrder: 62, active: true, price: { cash: '19,45', credit: '19,85' } },
             { id: '51', name: 'Pirulito Big Pop Frutas Recheado Mastigável 500 G', category: 'Bomboneire', details: [{flavor: 'Frutas'}], imageUrl: 'https://i.ibb.co/L3GybXc/pirulito-big-pop-frutas-sortidas-c-rech-mastigavel-500g-17525-1-b3db72729bb08998eab24f4c6a2c86c3.webp', sortOrder: 63, active: true, price: { cash: '9,50', credit: '9,69' } },
             { id: '53', name: 'Pirulito Cherry Pop', category: 'Bomboneire', details: [{flavor: 'Cereja'}], imageUrl: 'https://i.ibb.co/Ngx4Kscp/Pirulito-Mix-Cherry-Pop-700-Gr-c50-unid-Simas-3.webp', sortOrder: 64, active: true, price: { cash: '15,98', credit: '16,30' } },
-            
-            // -- Doces Diversos --
             { id: '48', name: 'Doce Balsamo Pacote com 150 unidades', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/PvRGxkhq/D-NQ-NP-922701-MLB76612538960-062024-O.webp', sortOrder: 65, active: true, price: { cash: '56,00', credit: '57,12' } },
             { id: '49', name: 'Doce Balsamo Pacote com 50 unidades', category: 'Bomboneire', details: [{flavor: 'Doce de Amendoim'}, {flavor: 'Doce de Caramelo'}, {flavor: 'Doce de Leite'}], imageUrl: 'https://i.ibb.co/fzwM1rPm/Gemini-Generated-Image-klafw5klafw5klaf.png', sortOrder: 66, active: true, price: { cash: '17,00', credit: '17,34' } },
             { id: '54', name: 'Paçoca Paçokids', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/KxQZcMCk/Gemini-Generated-Image-yf3ys0yf3ys0yf3y.png', sortOrder: 67, active: true, price: { cash: '17,00', credit: '17,34' } },
@@ -377,8 +404,6 @@
             { id: '46', name: 'Doce Molecão', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/prz1zsm5/Chat-GPT-Image-20-de-jan-de-2026-14-26-54.png', sortOrder: 70, active: true, price: { cash: '13,70', credit: '13,97' } },
             { id: '56', name: 'Cocada Recheada Pé de Serra', category: 'Bomboneire', details: [{flavor: 'Recheada'}], imageUrl: 'https://i.ibb.co/wFt8jggq/Chat-GPT-Image-20-de-jan-de-2026-15-24-48.png', sortOrder: 71, active: true, price: { cash: '16,00', credit: '16,32' } },
             { id: '22', name: 'Bolibol 680G', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/4g0ZmJyn/bolibol-pote-680g-3419-1-5dc9f8b84c1e6b41ba4462bb2b725447.webp', sortOrder: 72, active: true, price: { cash: '23,40', credit: '23,87' } },
-            
-            // -- Salgadinhos --
             { id: '44', name: 'Torresmo Pé de Serra', category: 'Bomboneire', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/Hp9txykH/l-9aee4631cfa14377af45cd51cdd3a79f.png', sortOrder: 73, active: true, price: { cash: '21,00', credit: '21,50' } },
             { id: '94', name: 'Salgadinho Agitos 85G', category: 'Bomboneire', details: [{flavor: 'Cebola'}, {flavor: 'Barbecue'}, {flavor: 'Presunto'}, {flavor: 'Requeijão'}, {flavor: 'Queijo'}, {flavor: 'Galinha caipira'}], imageUrl: 'https://i.ibb.co/4gtTH7sz/Gemini-Generated-Image-2p7o242p7o242p7o.png', sortOrder: 74, active: true, price: { cash: '15,00', credit: '15,25' } },
             { id: '42', name: 'Salgadinho Goxtoso 28G', category: 'Bomboneire', details: [{flavor: 'Cebola'}, {flavor: 'Churrasco'}, {flavor: 'Galinha Caipira'}, {flavor: 'Pizza'}, {flavor: 'Presunto'}, {flavor: 'Queijo'}], imageUrl: 'https://i.ibb.co/7J7yjqvV/Goxtoso-Assado.png', sortOrder: 75, active: true, price: { cash: '6,70', credit: '6,80' } },
@@ -392,7 +417,7 @@
             { id: '55', name: 'Incenso', category: 'Outros', details: [{flavor: 'Tradicional'}], imageUrl: 'https://i.ibb.co/SwZ3375V/Whats-App-Image-2025-12-16-at-15-02-04.jpg', sortOrder: 81, active: true, price: { cash: '5,99', credit: '6,11' } },
         ];
         
-        // --- Improved Persuasive Texts ---
+        // --- TEXTOS PERSUASIVOS (Mantidos da WR) ---
         const getPersuasiveText = (product) => {
             const name = product.name.toLowerCase();
             const category = product.category;
@@ -413,6 +438,144 @@
             if (category === 'Bomboneire') return 'O rei do checkout. Produtos de baixo desembolso que aumentam o ticket médio da compra sem o cliente perceber.';
             
             return 'Este produto de alta qualidade é uma excelente adição ao seu mix, garantindo satisfação do cliente e excelente retorno financeiro.';
+        };
+        
+        // === CONTROLE DE ZOOM MANUAL ===
+        const IMAGE_SCALE_OVERRIDES = {
+            // Bebidas não alcoólicas
+            '60': 0.9,  // Goob 2L
+            '58': 0.9,  // Goob 1L
+            '64': 1.2,  // Goob 230
+            '74': 1.54, // Ener Up 2L
+            '72': 1.61, // Ener Up 250
+            '76': { scale: 2.12, translateY: '-15px' }, // GuaranUp Copo
+            '75': 1.60, // GuaranUp 200
+            '85': 0.85, // Loa 1.5
+            '86': 0.85, // Loa 500
+            '87': 0.85, // Loa Gas
+            '82': 1.0,  // Yulo Box
+            '79': 0.9,  // Yulo 1.5
+            '77': 0.9,  // Yulo 400
+            '80': 0.9,  // Yulo 200
+            '73': 1.2,  // Ener Up Lata
+            'new1': 0.95, // Maratinho
+
+            // Alcoólicas
+            'b1': 0.93, // Brussels Lager
+            'b3': 0.93, // Brussels LN
+            'b2': 0.93, // Brussels Ultra
+            'b4': 0.93, // Brussels Ultra LN
+            
+            '1': 0.88,  // Pitu Litro
+            '4': 0.75,  // Pitu Lata 350
+            '5': 1.74,  // Pitu 600
+            
+            '72': 0.88, // Montilla Ouro
+            '73': 0.99, // Montilla Branca
+            '23': 1.1,  // Paratudo
+            '3': 0.99,  // Asa Branca
+            '20': 0.99, // Seleta
+            '31': 0.95, // Velho Barreiro
+            '26': { scale: 1.09, translateY: '-7px' }, // Presidente
+            
+            '33': 0.99, // Natasha
+            '30': 1.4,  // Syn Ice
+            '88': 0.7,  // Glow Lata
+            '89': 0.8,  // Glow Garrafa
+            
+            '21': 0.9,  // Black Label
+            '29': 0.9,  // Red Label
+            '24': 0.9,  // Passport
+            '12': 1.0,  // White Horse
+            '44': { scale: 1.05, translateY: '5px' }, // Chanceler
+            '35': 0.9,  // Black Stone
+            
+            '27': 0.95, // Quinta 1L
+            '28': 0.95, // Quinta 750
+            '10': 0.95, // Cantina
+            '25': 0.95, // Pergula 1L
+            
+            '6': 0.95,  // Campari
+            '20': 0.9,  // Jurubeba
+            '16': 0.9,  // Dreher
+            '15': 0.9,  // Domecq
+            '11': { scale: 1.18, translateY: '13px' }, // Catuaba
+            '2': 1.16,  // Alcatrao
+            '18': 0.96, // Gengibre VN
+            '7': 0.9,   // Canelinha
+
+            // Bomboneire
+            '38': 0.95, // Bala Canela
+            '36': 0.9,  // Icekiss
+            '50': 0.75, // Chocolate Purissimo
+            '43': 1.2,  // Bala Mastigavel
+            '39': 0.9,  // Halls
+            '52': 0.95, // Goxtoso Sortido
+            '42': 0.95, // Goxtoso 28g
+            '41': 0.95, // Pipoca
+            '59': 1.18, // Batata
+            '94': 0.95, // Agitos
+            '44': 0.95, // Torresmo
+            '90': 0.85, // Leite em Po
+            
+            // Cigarro (se houver) - Mantendo padrao
+            
+            // Outros
+            '14': 0.855, // Copo Americano
+            '91': 0.9,   // Copo Descartavel
+            '55': 0.855, // Incenso
+        };
+
+        const getProductImageStyle = (productId) => {
+            const override = IMAGE_SCALE_OVERRIDES[productId];
+            if (!override) return { transform: 'scale(1)' };
+            
+            if (typeof override === 'object') {
+                if(override.transform) {
+                     return { transform: override.transform };
+                }
+                return { transform: `scale(${override.scale}) translateY(${override.translateY || '0'})` };
+            }
+            return { transform: `scale(${override})` };
+        };
+
+
+        // --- COMPONENTE: BARRA DE PROGRESSO DOPAMINÉRGICA ---
+        const DopamineProgressBar = () => {
+            const [scrollProgress, setScrollProgress] = React.useState(0);
+            
+            React.useEffect(() => {
+                const handleScroll = () => {
+                    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                    const progress = (window.scrollY / totalHeight) * 100;
+                    setScrollProgress(Math.min(progress, 100));
+                };
+                
+                window.addEventListener('scroll', handleScroll);
+                handleScroll(); // Init
+                return () => window.removeEventListener('scroll', handleScroll);
+            }, []);
+            
+            const getMessage = () => {
+                if (scrollProgress < 15) return "Role para baixo para ver os produtos";
+                if (scrollProgress < 90) return "Continue descendo...";
+                return "Está quase acabando";
+            };
+
+            if (scrollProgress > 98) return null; // Esconde quando chega no final absoluto
+
+            return (
+                <div className="progress-container">
+                    <div className="flex-grow">
+                        <div className="flex justify-between items-end mb-1">
+                            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{getMessage()}</span>
+                        </div>
+                        <div className="progress-bar-track">
+                            <div className="progress-bar-fill" style={{ width: `${scrollProgress}%` }}></div>
+                        </div>
+                    </div>
+                </div>
+            );
         };
 
         let MOCK_SETTINGS = {
@@ -448,13 +611,6 @@
                 return { products, settings: MOCK_SETTINGS };
             },
         };
-    </script>
-    
-    <!-- =================================================================== -->
-    <!-- React Application                                                   -->
-    <!-- =================================================================== -->
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
         
         // --- Icon Components ---
         const IconLupa = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>;
@@ -479,59 +635,143 @@
         
         const ProductDetailModal = ({ product, onClose, showPrices }) => {
             if (!product) return null;
+            
+            // Especial: Guaraná Copo fica GIGANTE no modal (Se for ID 76)
+            const isGuaranaCopo = product.id === '76';
+            const modalImageStyle = isGuaranaCopo ? { transform: 'scale(2.5)' } : { transform: 'scale(1.2)' };
+
+            const isBeer = product.name && product.name.toLowerCase().includes('cerveja');
+
+            const getCalculatedPrices = () => {
+                if (!product.price) return null;
+                
+                const packSize = product.packSize || 1;
+                const isPackPrice = product.isPackPrice; 
+                
+                const parsePrice = (p) => parseFloat(p.replace(',', '.'));
+                const formatPrice = (val) => (Math.floor(val * 100) / 100).toFixed(2).replace('.', ',');
+
+                const cashPrice = parsePrice(product.price.cash);
+                const creditPrice = parsePrice(product.price.credit);
+
+                let packPriceCash, unitPriceCash, packPriceCredit, unitPriceCredit;
+
+                if (isPackPrice) {
+                    // Stored price is Pack
+                    packPriceCash = cashPrice;
+                    packPriceCredit = creditPrice;
+                    unitPriceCash = cashPrice / packSize;
+                    unitPriceCredit = creditPrice / packSize;
+                } else {
+                    // Stored price is Unit
+                    unitPriceCash = cashPrice;
+                    unitPriceCredit = creditPrice;
+                    packPriceCash = cashPrice * packSize;
+                    packPriceCredit = creditPrice * packSize;
+                }
+
+                return {
+                    packCash: formatPrice(packPriceCash),
+                    unitCash: formatPrice(unitPriceCash),
+                    packCredit: formatPrice(packPriceCredit),
+                    unitCredit: formatPrice(unitPriceCredit),
+                    packSize: packSize
+                };
+            };
+
+            const prices = getCalculatedPrices();
+            const showDetailedPricing = product.packSize && product.packSize > 1;
 
             return (
                 <div
-                    className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition-opacity duration-300 p-4"
+                    className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-[200] transition-opacity duration-300 p-4"
                     onClick={onClose}
                 >
                     <div 
-                        className="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl flex flex-col md:flex-row overflow-hidden" 
+                        className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl flex flex-col md:flex-row overflow-hidden max-h-[90vh]" 
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Left Side: Text */}
-                        <div className="w-full md:w-1/2 bg-gray-100 p-6 md:p-8 flex flex-col justify-center order-2 md:order-1">
+                        <div className="w-full md:w-1/2 bg-gray-50 p-6 md:p-8 flex flex-col justify-center order-2 md:order-1 overflow-y-auto">
                             <h3 className="text-2xl lg:text-3xl font-bold mb-3" style={{color: 'var(--brand-green)'}}>
                                 {product.name}
                             </h3>
-                            <p className="text-gray-600 text-sm lg:text-base leading-relaxed">
+                            <p className="text-gray-600 text-sm lg:text-base leading-relaxed font-medium">
                                 {product.persuasiveText}
                             </p>
                              {(product.details && product.details.length > 0) && (
                                 <div className="mt-4">
                                     <p className="font-bold text-base" style={{color: 'var(--brand-red)'}}>
-                                        {product.details.length > 1 ? 'Opções:' : 'Opção:'}
+                                        {product.details.length > 1 ? 'Opções Disponíveis:' : 'Opção:'}
                                     </p>
-                                    <p className="text-sm text-gray-700">
-                                        {(product.details || []).map(detail => detail.flavor).join(', ')}
-                                    </p>
+                                    <div className="flex flex-wrap gap-2 mt-2">
+                                        {(product.details || []).map(detail => (
+                                            <span key={detail.flavor} className="bg-white border border-gray-200 px-3 py-1 rounded-full text-xs font-bold text-gray-700 shadow-sm">
+                                                {detail.flavor}
+                                            </span>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
 
                             {product.outOfStock ? (
                                 <div className="mt-6 border-t pt-4 border-gray-300">
-                                    <span className="text-2xl font-bold text-red-500 uppercase tracking-widest border-2 border-red-500 px-4 py-2 rounded-lg inline-block transform -rotate-2">
+                                    <span className="text-xl font-bold text-red-500 uppercase tracking-widest border-2 border-red-500 px-4 py-2 rounded-lg inline-block transform -rotate-2">
                                         Produto em Falta
                                     </span>
                                 </div>
                             ) : (
-                                product.price && showPrices && (
-                                    <div className="mt-6 border-t pt-4 border-gray-300">
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-gray-600 font-medium">Preço à vista:</span>
-                                            <span className="text-2xl font-bold text-green-700">R$ {product.price.cash}</span>
-                                        </div>
-                                        <div className="flex justify-between items-center text-sm">
-                                            <span className="text-gray-500 font-medium">Preço a prazo:</span>
-                                            <span className="text-xl font-bold" style={{color: 'var(--brand-yellow)'}}>R$ {product.price.credit}</span>
-                                        </div>
+                                product.price && showPrices && !isBeer && (
+                                    <div className="mt-6 border-t pt-4 border-gray-300 space-y-3">
+                                        {showDetailedPricing ? (
+                                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+                                                <div className="bg-green-50 px-4 py-2 border-b border-green-100 flex justify-between items-center">
+                                                    <span className="text-green-800 font-bold text-sm uppercase">Tabela de Preços</span>
+                                                    <span className="bg-green-200 text-green-800 text-[10px] font-bold px-2 py-0.5 rounded-full">
+                                                        Pacote com {prices.packSize} un
+                                                    </span>
+                                                </div>
+                                                <div className="p-0">
+                                                    <table className="w-full text-sm">
+                                                        <thead>
+                                                            <tr className="bg-gray-50 border-b border-gray-100">
+                                                                <th className="py-2 px-3 text-left font-semibold text-gray-500">Tipo</th>
+                                                                <th className="py-2 px-3 text-right font-bold text-green-700">À Vista</th>
+                                                                <th className="py-2 px-3 text-right font-bold text-orange-600">Boleto</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr className="border-b border-gray-100 last:border-0">
+                                                                <td className="py-3 px-3 font-medium text-gray-700">Pacote</td>
+                                                                <td className="py-3 px-3 text-right font-bold text-green-700 text-lg">R$ {prices.packCash}</td>
+                                                                <td className="py-3 px-3 text-right font-semibold text-orange-600">R$ {prices.packCredit}</td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td className="py-3 px-3 font-medium text-gray-700">Unidade</td>
+                                                                <td className="py-3 px-3 text-right font-bold text-green-700 text-lg">R$ {prices.unitCash}</td>
+                                                                <td className="py-3 px-3 text-right font-semibold text-orange-600">R$ {prices.unitCredit}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <div className="flex flex-col justify-center items-center p-3 bg-green-50 rounded-xl border border-green-200 shadow-sm h-full">
+                                                    <span className="text-green-800 font-bold uppercase text-xs mb-1">À vista</span>
+                                                    <span className="text-2xl font-black text-green-700 tracking-tight">R$ {product.price.cash}</span>
+                                                </div>
+                                                <div className="flex flex-col justify-center items-center p-3 bg-orange-50 rounded-xl border border-orange-200 h-full">
+                                                    <span className="text-orange-800 font-bold uppercase text-xs mb-1">Boleto</span>
+                                                    <span className="text-2xl font-bold text-orange-600">R$ {product.price.credit}</span>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )
                             )}
                         </div>
 
-                        {/* Right Side: Image */}
-                        <div className="w-full md:w-1/2 bg-white p-6 md:p-8 flex items-center justify-center order-1 md:order-2 relative">
+                        <div className="w-full md:w-1/2 bg-white p-4 md:p-8 flex items-center justify-center order-1 md:order-2 relative h-64 md:h-auto border-b md:border-b-0 md:border-l border-gray-100 overflow-hidden">
                             {product.outOfStock && (
                                 <div className="absolute top-4 right-4 bg-red-600 text-white px-3 py-1 rounded-full text-xs font-bold z-10 shadow-lg">
                                     INDISPONÍVEL
@@ -540,40 +780,39 @@
                             <img
                                 src={product.imageUrl}
                                 alt={product.name}
-                                className={`w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain ${product.outOfStock ? 'opacity-50 grayscale' : ''}`}
+                                style={modalImageStyle}
+                                className={`w-full h-full object-contain transition-transform duration-500 ${product.outOfStock ? 'opacity-50 grayscale' : ''}`}
                             />
                         </div>
 
                         <button
                             onClick={onClose}
-                            className="absolute top-3 right-3 bg-white text-gray-700 rounded-full p-2 shadow-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white z-30"
+                            className="absolute top-3 right-3 bg-white text-gray-700 rounded-full p-2 shadow-lg hover:bg-gray-200 focus:outline-none z-30"
                             aria-label="Fechar"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                         </button>
                     </div>
                 </div>
             );
         };
 
-        // --- Page Components ---
         const Header = () => {
             return (
                 <header className="sticky top-0 z-40 shadow-sm" style={{backgroundColor: 'var(--brand-green)', backgroundImage: 'linear-gradient(to right, var(--brand-green), var(--brand-green-light))'}}>
-                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-24">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20 sm:h-24">
                         <div className="flex-1 flex justify-start items-center gap-2">
-                             {/* Retângulo arredondado com px-12 (mais largo) e imagem h-28 com margem negativa para não aumentar a caixa branca */}
-                             <div className="bg-white px-12 py-0.5 rounded-2xl shadow-lg flex items-center gap-2 transform hover:scale-105 transition-transform duration-300">
+                             <div className="bg-white px-6 py-2 rounded-2xl shadow-lg flex items-center gap-2 transform hover:scale-105 transition-transform duration-300">
                                  <a href="#" onClick={(e) => { e.preventDefault(); window.location.reload(); }} className="flex items-center">
-                                     <img src="https://i.ibb.co/Fb94vFGd/Chat-GPT-Image-20-de-jan-de-2026-12-41-03.png" alt="WR Atacadista" className="h-28 w-auto object-contain -my-6" />
+                                     <img src="https://i.ibb.co/Fb94vFGd/Chat-GPT-Image-20-de-jan-de-2026-12-41-03.png" alt="WR Atacadista" className="h-10 sm:h-12 w-auto object-contain" />
                                  </a>
                              </div>
                         </div>
                         
-                        <div className="flex-1 flex justify-end items-center px-2">
-                            <a href="https://www.instagram.com/atacadistawr?igsh=dHJlNHFjMWprNG05" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white transition-all duration-300 transform hover:scale-105 bg-white bg-opacity-10 py-2 px-4 rounded-full border border-white border-opacity-20 hover:bg-opacity-20">
-                                <IconInstagram size={24} />
-                                <span className="font-bold text-sm sm:text-lg tracking-wider whitespace-nowrap hidden sm:inline">@atacadistawr</span>
+                        <div className="flex-1 flex justify-end items-center px-1">
+                            <a href="https://www.instagram.com/atacadistawr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white transition-all duration-300 transform hover:scale-105 bg-white bg-opacity-10 py-1.5 px-3 rounded-full border border-white border-opacity-20 hover:bg-opacity-20">
+                                <IconInstagram size={20} />
+                                <span className="font-bold text-xs sm:text-sm tracking-wider whitespace-nowrap hidden sm:inline">@atacadistawr</span>
                             </a>
                         </div>
                     </div>
@@ -582,7 +821,7 @@
         };
 
         const Footer = () => (
-            <footer className="mt-16 py-8 text-center text-sm text-gray-600 bg-white bg-opacity-80 backdrop-filter backdrop-blur-sm rounded-t-3xl shadow-inner">
+            <footer className="mt-16 py-8 text-center text-sm text-gray-600 bg-white bg-opacity-80 backdrop-filter backdrop-blur-sm rounded-t-3xl shadow-inner mb-16">
                 <div className="flex justify-center items-center gap-2 mb-2">
                     <i className="ph-sun text-yellow-500 text-xl"></i>
                     <span className="font-semibold text-green-800">Verão 2026 WR Atacadista</span>
@@ -602,126 +841,20 @@
             </div>
         );
 
-        // --- ZOOM LOGIC CONFIGURATION (Tamanhos do IgorValen aplicados aos produtos da WR) ---
-        
-        // 1. Excluded: No Zoom (scale-100)
-        const EXCLUDED_FROM_ZOOM = [
-            '85', '86', '87', // Aguas Loa
-            'b1', 'b2', 'b3', 'b4', // Brussels
-            '12', '26', // Destilados Específicos
-            '38', '90', // Bomboneire/Outros (36 e 11 removed)
-            // Moved here from Tiny Zoom (to increase):
-            '9', '13', '19', '31', '32', '14'
-        ];
-
-        // 1.1 Giga Zoom: Scale 5.5x
-        const GIGA_ZOOM_IDS = [];
-
-        // 1.2 Ultra Zoom: Scale 4.5x
-        const ULTRA_ZOOM_IDS = [];
-
-        // 2. Mega Zoom: Scale 3.8x
-        const MEGA_ZOOM_IDS = [
-            '76' // GuaranUp Copo
-        ];
-
-        // 2.7x Zoom (Added for GuaranUp 200ML)
-        const SCALE_2_7_IDS = ['75']; // GuaranUp 200ML moved here
-
-        // 2.4x Zoom (Added for Catuaba)
-        const SCALE_2_4_IDS = ['11']; // Catuaba
-
-        // 2.0x Zoom (Added for Icekiss Sortida)
-        const SCALE_2_0_IDS = ['36']; // Icekiss Sortida
-
-        // 2.6x Zoom (Super Zoom - Adjusted Black Label here)
-        const SUPER_ZOOM_IDS = [
-            '74', '72', '5', '30', '64' // Removed 75
-        ];
-
-        // 4. Slight Zoom: Scale 1.9x
-        const SLIGHT_ZOOM_IDS = [
-            '1',    // Pitu Litro
-            '91'    // Copo Descartável
-        ];
-
-        // 1.8x Zoom (Added for Black Label and Domecq)
-        const SCALE_1_8_IDS = ['21', '15'];
-
-        // 1.6x Zoom (Added for Maratinho)
-        const SCALE_1_6_IDS = ['new1'];
-
-        // 1.4x Zoom
-        const SCALE_1_4_IDS = ['4']; // Pitu 350
-
-        // 5. Smaller Zoom: Scale 1.35x
-        const SMALLER_ZOOM_IDS = [
-            '60',     // Goob 2L
-            '58',     // Goob 1L
-            '70',     // Drink T
-            '6',      // Campari
-            '22', '23', '24', // Outros
-            '50',     // Chocolate Puríssimo
-            '54',     // Paçokids
-            '89'      // Ice Glow Garrafa
-        ];
-
-        // 1.3x Zoom
-        const SCALE_1_3_IDS = ['48']; // Paçoca 150
-
-        // 6. Low Zoom: Scale 1.15x (Smaller than 1.35x)
-        const LOW_ZOOM_IDS = [
-            '77', '80' // Suco Yulo 400/200
-        ];
-
-        // 7. Tiny Zoom: Scale 0.8x (Smaller than 0.9x)
-        const TINY_ZOOM_IDS = [
-            '88'  // Glow Ice 269ML
-        ];
-
         const ProductCard = ({ product, onProductClick, showPrices }) => {
             const handleKeyPress = (e) => {
                 if (e.key === 'Enter') {
                     onProductClick(product);
                 }
             };
-
-            // Determine Scale Class Based on IgorValen Logic
-            let imgZoomClass = 'scale-[1.7]'; // Default Zoom
-
-            if (EXCLUDED_FROM_ZOOM.includes(product.id)) {
-                imgZoomClass = 'scale-100';
-            } else if (GIGA_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[5.5]'; // Giga Zoom
-            } else if (ULTRA_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[4.5]'; // Ultra Zoom
-            } else if (MEGA_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[3.8]'; // Mega Zoom
-            } else if (SCALE_2_7_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[2.7]'; // 2.7x Zoom
-            } else if (SUPER_ZOOM_IDS.includes(product.id)) { // 2.6x
-                imgZoomClass = 'scale-[2.6]'; 
-            } else if (SCALE_2_4_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[2.4]'; // 2.4x Zoom
-            } else if (SCALE_2_0_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[2.0]'; // 2.0x Zoom
-            } else if (SLIGHT_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.9]'; // Slight Zoom
-            } else if (SCALE_1_8_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.8]';
-            } else if (SCALE_1_6_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.6]';
-            } else if (SCALE_1_4_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.4]';
-            } else if (SMALLER_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.35]'; // Smaller Zoom
-            } else if (SCALE_1_3_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.3]';
-            } else if (LOW_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[1.15]'; // Low Zoom
-            } else if (TINY_ZOOM_IDS.includes(product.id)) {
-                imgZoomClass = 'scale-[0.8]'; // Tiny Zoom
-            }
+            
+            // Aplica a escala personalizada
+            const customStyle = getProductImageStyle(product.id);
+            
+            // Cálculo do preço unitário se for pacote
+            const unitPrice = (product.price && product.isPackPrice && product.packSize) 
+                ? (parseFloat(product.price.cash.replace(',','.')) / product.packSize).toFixed(2).replace('.', ',') 
+                : null;
 
             return (
                 <div
@@ -729,39 +862,31 @@
                     tabIndex={0}
                     onClick={() => onProductClick(product)}
                     onKeyPress={handleKeyPress}
-                    className="bg-white rounded-3xl shadow-md overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 h-full group cursor-pointer focus:outline-none border border-gray-100"
+                    className="bg-white rounded-2xl shadow-md overflow-hidden flex flex-col transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 h-full group cursor-pointer focus:outline-none border border-gray-100"
                 >
-                    <div className="relative h-48 overflow-hidden bg-white flex items-center justify-center p-6">
-                        {product.outOfStock ? (
+                    <div className="relative h-36 sm:h-44 md:h-52 overflow-hidden bg-white flex items-center justify-center p-2">
+                        {product.outOfStock && (
                             <div className="out-of-stock-overlay">
                                 <span className="out-of-stock-badge">EM FALTA</span>
                             </div>
-                        ) : (
-                            product.price && showPrices && (
-                                <div className="price-badge">
-                                    <span className="label">À Vista</span>
-                                    <span className="value">R$ {product.price.cash}</span>
-                                </div>
-                            )
                         )}
+                        
                         <img
                             loading="lazy"
                             src={product.imageUrl}
                             alt={product.name}
-                            className={`max-w-full max-h-full object-contain transform transition-transform duration-300 ${imgZoomClass} ${product.outOfStock ? 'opacity-50 grayscale' : ''}`}
+                            style={customStyle}
+                            className={`max-w-full max-h-full object-contain transform transition-transform duration-300 ${product.outOfStock ? 'opacity-50 grayscale' : ''}`}
                         />
                     </div>
 
-                    <div className="p-3 flex-grow flex flex-col justify-between bg-white relative z-10">
+                    <div className="p-2 sm:p-3 flex-grow flex flex-col justify-between bg-white relative z-10 border-t border-gray-50">
                         <div>
-                            <h3 className="font-bold text-base md:text-lg mb-2 text-green-800 group-hover:text-green-600 transition-colors duration-300 line-clamp-2 leading-tight">{product.name}</h3>
+                            <h3 className="font-bold text-xs sm:text-sm md:text-base mb-1 text-green-800 group-hover:text-green-600 transition-colors duration-300 line-clamp-2 leading-tight min-h-[2.5em]">{product.name}</h3>
                             {(product.details && product.details.length > 0) && (
-                                <div className="mt-1 mb-2">
-                                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide">
-                                         {product.details.length > 1 ? 'Sabores Disponíveis' : 'Sabor'}
-                                    </p>
-                                    <p className="text-xs text-gray-700 leading-tight truncate">
-                                        {(product.details || []).map(detail => detail.flavor).join(', ')}
+                                <div className="mb-1 hidden sm:block">
+                                    <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wide truncate">
+                                         {product.details.length > 1 ? 'Vários Sabores' : product.details[0].flavor}
                                     </p>
                                 </div>
                             )}
@@ -769,35 +894,41 @@
                         
                         <div className="mt-auto">
                             {product.outOfStock ? (
-                                <div className="mt-2 pt-2 border-t border-gray-100 text-center">
-                                    <span className="text-sm font-bold text-red-500 uppercase">Indisponível no momento</span>
+                                <div className="mt-1 pt-1 border-t border-gray-100 text-center">
+                                    <span className="text-[10px] sm:text-xs font-bold text-red-500 uppercase">Indisponível</span>
                                 </div>
                             ) : (
                                 product.comingSoon ? (
-                                    <div className="mt-2 pt-2 border-t border-gray-100 text-center">
-                                        <span className="text-lg font-bold text-yellow-600 uppercase tracking-wider animate-pulse">EM BREVE</span>
+                                    <div className="mt-1 pt-1 border-t border-gray-100 text-center">
+                                        <span className="text-xs sm:text-sm font-bold text-yellow-600 uppercase tracking-wider animate-pulse">EM BREVE</span>
                                     </div>
                                 ) : (
-                                    product.price && showPrices ? (
-                                        <div className="mt-2 pt-2 border-t border-gray-100">
-                                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center w-full gap-1">
-                                                <span className="font-extrabold text-[0.65rem] uppercase tracking-wide text-gray-500">A PRAZO</span>
-                                                <div className="flex items-center gap-1 whitespace-nowrap">
-                                                    <span className="font-bold text-xs" style={{color: 'var(--brand-yellow)'}}>R$</span>
-                                                    <span className="font-bold text-base sm:text-lg" style={{color: 'var(--brand-yellow)'}}>{product.price.credit}</span>
-                                                </div>
+                                    product.price && showPrices && (
+                                        <div className="mt-2 flex flex-col gap-1.5">
+                                            <div className="bg-green-50 border border-green-200 rounded-lg p-1.5 text-center shadow-sm w-full">
+                                                <span className="text-[10px] text-green-700 font-bold uppercase block tracking-wider mb-0.5 opacity-80 leading-none">À Vista</span>
+                                                <span className="text-base sm:text-lg font-black text-green-700 leading-none block">R$ {product.price.cash}</span>
                                             </div>
-                                        </div>
-                                    ) : (
-                                        <div className="mt-2 pt-2 border-t border-gray-100 text-center">
-                                            <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Confira Oferta</span>
+                                            
+                                            <div className="bg-orange-50 border border-orange-100 rounded-lg p-1.5 text-center w-full">
+                                                <span className="text-[10px] text-orange-600 font-bold uppercase block tracking-wider mb-0.5 opacity-80 leading-none">A Prazo</span>
+                                                <span className="text-base sm:text-lg font-black text-orange-600 leading-none block">R$ {product.price.credit}</span>
+                                            </div>
+                                            
+                                            {unitPrice && (
+                                                <div className="text-center mt-0.5">
+                                                    <span className="text-[9px] text-gray-500 font-semibold bg-gray-100 px-2 py-0.5 rounded-full inline-block">
+                                                        Nesta embalagem a un. sai a R$ {unitPrice}
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
                                     )
                                 )
                             )}
-                            <div className="mt-2 text-right">
-                                <span className="text-[10px] font-semibold text-green-600 group-hover:text-green-800 transition-colors uppercase tracking-wider flex items-center justify-end gap-1">
-                                    Ver Detalhes <i className="ph-caret-right"></i>
+                            <div className="mt-2 text-center sm:text-right">
+                                <span className="text-[9px] font-bold text-gray-300 group-hover:text-green-600 transition-colors uppercase tracking-wider flex items-center justify-center sm:justify-end gap-0.5">
+                                    Ver Detalhes <i className="ph-plus-circle text-xs"></i>
                                 </span>
                             </div>
                         </div>
@@ -807,7 +938,7 @@
         };
         
         const HomePage = ({ loading, groupedProducts, allCategories, activeCategory, setActiveCategory, setQuery, onProductClick, query, showPrices, setShowPrices }) => {
-            const searchInputRef = useRef(null);
+            const searchInputRef = React.useRef(null);
 
             const handleClearSearch = () => {
                 setQuery('');
@@ -818,44 +949,46 @@
             }
 
             return (
-                <div className="container mx-auto p-4 sm:p-6 lg:p-8">
+                <div className="container mx-auto p-2 sm:p-4 lg:p-6">
+                    <DopamineProgressBar />
+                    
                     { !query && !activeCategory && (
                         <>
-                            <div className="my-8 sm:my-10 mb-12 sm:mb-16 animate-fade-in-down">
+                            <div className="my-4 sm:my-8 mb-6 sm:mb-10 animate-fade-in-down px-2">
                                 <div className="bg-white bg-opacity-95 p-6 sm:p-8 rounded-3xl shadow-xl text-center backdrop-filter backdrop-blur-sm border-2 border-green-100 relative overflow-hidden">
                                      <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
                                         <i className="ph-sun-dim text-8xl text-yellow-500"></i>
                                      </div>
-                                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4" style={{color: 'var(--brand-green)'}}>
+                                    <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold mb-2 sm:mb-4 tracking-tight" style={{color: 'var(--brand-green)'}}>
                                         Verão de Ofertas WR Atacadista
                                     </h1>
-                                    <p className="text-base sm:text-lg md:text-xl max-w-2xl mx-auto text-gray-600">
-                                        Refresque seu estoque com os melhores preços da estação!
+                                    <p className="text-sm sm:text-lg text-gray-600 font-medium">
+                                        Preços refrescantes para seu negócio lucrar mais!
                                     </p>
                                 </div>
                             </div>
-                            
+
                             <div className="my-12 text-center">
-                                <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-white flex items-center justify-center gap-2" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.5)'}}>
+                                <h2 className="text-xl sm:text-2xl font-bold mb-2 text-white flex items-center justify-center gap-2" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.5)'}}>
                                     <i className="ph-seal-check text-yellow-400"></i> Nossas Certificações
                                 </h2>
-                                <p className="max-w-2xl mx-auto mb-8 text-white font-medium" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.4)'}}>
+                                <p className="max-w-2xl mx-auto mb-8 text-white font-medium text-sm sm:text-base" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.4)'}}>
                                     Qualidade garantida e compromisso com o consumidor.
                                 </p>
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="text-center flex flex-col items-center p-2 hover-scale">
-                                        <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-9001.png" alt="Selo ISO 9001" className="h-20 sm:h-28 mb-4 filter drop-shadow-lg"/>
+                                        <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-9001.png" alt="Selo ISO 9001" className="h-16 sm:h-24 mb-4 filter drop-shadow-lg"/>
                                     </div>
                                     <div className="text-center flex flex-col items-center p-2 hover-scale">
-                                        <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-14001.png" alt="Selo ISO 14001" className="h-20 sm:h-28 mb-4 filter drop-shadow-lg"/>
+                                        <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-14001.png" alt="Selo ISO 14001" className="h-16 sm:h-24 mb-4 filter drop-shadow-lg"/>
                                     </div>
                                     <div className="text-center flex flex-col items-center p-2 hover-scale">
-                                    <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-45001-ES.png" alt="Selo ISO 45001" className="h-20 sm:h-28 mb-4 filter drop-shadow-lg"/>
+                                    <img src="https://group-ism.com/br/wp-content/uploads/2023/07/ism-45001-ES.png" alt="Selo ISO 45001" className="h-16 sm:h-24 mb-4 filter drop-shadow-lg"/>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mb-10 rounded-3xl overflow-hidden border-4 border-green-600 shadow-2xl transform hover:scale-[1.01] transition-transform duration-500">
+                            <div className="mb-8 mx-2 rounded-3xl overflow-hidden border-4 border-green-600 shadow-2xl transform hover:scale-[1.01] transition-transform duration-500">
                                 <a href="https://ibb.co/9H3Td064" target="_blank" rel="noopener noreferrer">
                                     <img 
                                         src="https://i.ibb.co/nM8cKy91/Chat-GPT-Image-20-de-jan-de-2026-13-39-22.png" 
@@ -868,44 +1001,33 @@
                         </>
                     )}
                     
-                     <div className="panel p-6 mb-10 border-4 border-green-600 bg-white">
-                         <div className="relative text-center mb-6">
-                             <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                 <div className="w-full border-t border-gray-200"></div>
-                             </div>
-                             <div className="relative flex justify-center">
-                                 <span className="bg-white px-4 text-2xl font-bold flex items-center gap-2" style={{ color: 'var(--brand-green)' }}>
-                                     <i className="ph-squares-four text-yellow-500"></i> Categorias
-                                 </span>
-                             </div>
-                         </div>
-                         <div className="flex gap-3 mb-6 justify-start overflow-x-auto pb-2 no-scrollbar">
+                     <div className="panel p-3 sm:p-6 mb-8 border-b-4 border-green-600 bg-white mx-2 shadow-lg">
+                         <div className="flex gap-2 mb-4 justify-start overflow-x-auto pb-2 no-scrollbar">
                              {allCategories.map(cat => {
                                  const isActive = (activeCategory === null && cat === 'Todas') || activeCategory === cat;
-                                 const iconData = CATEGORY_ICONS_DATA[cat] || { src: '', alt: '' };
+                                 const iconData = CATEGORY_ICONS_DATA[cat];
                                  return (
                                      <button 
                                          key={cat} 
                                          onClick={() => setActiveCategory(cat === 'Todas' ? null : cat)}
-                                         className={`flex items-center flex-shrink-0 gap-2 px-4 py-2 text-sm font-semibold rounded-full border-2 transition-all duration-200 ${isActive ? 'bg-green-600 text-white border-transparent shadow-md transform scale-105' : 'bg-white text-gray-700 border-gray-200 hover:border-green-500 hover:text-green-600'}`}
+                                         className={`flex flex-col items-center flex-shrink-0 gap-1 px-3 py-2 text-[10px] sm:text-xs font-bold rounded-2xl border transition-all duration-200 w-20 sm:w-24 text-center ${isActive ? 'bg-green-50 text-green-700 border-green-500 shadow-inner' : 'bg-gray-50 text-gray-500 border-gray-100 hover:border-green-300'}`}
                                      >
-                                         <CategoryIcon src={iconData.src} alt={iconData.alt} isActive={isActive} />
-                                         <span>{cat}</span>
+                                         <CategoryIcon src={iconData.src} alt={iconData.alt} isActive={false} size="w-8 h-8" />
+                                         <span className="leading-tight">{cat}</span>
                                      </button>
                                  );
                              })}
                          </div>
-                         <div className="flex flex-col md:flex-row gap-4 items-center mb-4">
+                         <div className="flex flex-col gap-3 items-center">
                             <div className="relative flex-grow flex items-center group w-full">
-                                <input ref={searchInputRef} type="text" placeholder="Buscar por nome ou sabor..." onChange={(e) => setQuery(e.target.value)} className="w-full pl-6 pr-14 py-4 bg-gray-5 border border-gray-300 text-gray-900 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 shadow-sm transition-shadow group-hover:shadow-md" />
-                                <button className="absolute right-2 bg-green-600 text-white p-3 rounded-full hover:bg-green-700 transition-colors shadow-sm">
+                                <input ref={searchInputRef} type="text" placeholder="O que você procura hoje?" onChange={(e) => setQuery(e.target.value)} className="w-full pl-5 pr-12 py-3 bg-gray-100 border-transparent text-gray-900 rounded-full focus:outline-none focus:ring-2 focus:ring-green-500 focus:bg-white transition-all text-sm font-medium" />
+                                <button className="absolute right-1.5 top-1.5 bottom-1.5 bg-green-600 text-white p-2 rounded-full hover:bg-green-700 transition-colors shadow-sm aspect-square flex items-center justify-center">
                                     <IconLupa />
                                 </button>
                             </div>
 
-                            {/* MODERN TOGGLE SWITCH COMPONENT */}
-                            <div className="flex items-center gap-3 bg-gray-50 px-5 py-3 rounded-full border border-gray-200 whitespace-nowrap shadow-sm">
-                                <span className="text-sm font-bold text-gray-700 select-none">Mostrar Preços</span>
+                            <div className="flex items-center justify-between w-full px-2">
+                                <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Exibir Preços</span>
                                 <label className="relative inline-flex items-center cursor-pointer">
                                     <input 
                                         type="checkbox" 
@@ -913,76 +1035,64 @@
                                         checked={showPrices}
                                         onChange={() => setShowPrices(!showPrices)}
                                     />
-                                    <div className="w-11 h-6 bg-gray-300 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                                    <div className="w-10 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
                                 </label>
                             </div>
                          </div>
                          
                          { (query || activeCategory) && (
-                            <div className="mt-4 text-center">
-                                <button onClick={handleClearSearch} className="text-sm font-semibold text-green-700 bg-white px-4 py-2 rounded-full shadow-md hover:bg-gray-100 transition-all border border-green-200 flex items-center gap-2 mx-auto">
-                                    <i className="ph-arrow-counter-clockwise"></i> Limpar Filtros e Voltar
+                            <div className="mt-3 text-center">
+                                <button onClick={handleClearSearch} className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors flex items-center justify-center gap-1 mx-auto">
+                                    <i className="ph-x-circle"></i> Limpar Busca
                                 </button>
                             </div>
                          )}
                      </div>
                     
-                    {/* Products Section */}
                     {groupedProducts.map(group => {
                         const categoryContent = (
                             <>
                                 {!query && !activeCategory && group.category === 'Bebidas não alcoólicas' && (
-                                    <div className="bg-white rounded-3xl shadow-lg p-4 sm:p-6 mb-8 flex flex-col gap-4">
+                                    <div className="bg-white rounded-3xl shadow-lg p-3 sm:p-6 mb-6 flex flex-col gap-3">
                                         <div className="text-center">
-                                            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold flex items-center justify-center gap-2" style={{color: 'var(--brand-green)'}}>
-                                                <i className="ph-drop text-blue-500"></i> ISM Brasil: portfólio de alto giro.
+                                            <h3 className="text-lg font-black flex items-center justify-center gap-2 uppercase tracking-wide text-gray-400">
+                                                Parceiros
                                             </h3>
-                                            <p className="text-sm sm:text-base md:text-lg font-semibold mt-2 text-gray-600">
-                                                Multinacional presente em 7 países, com fábrica em Alagoinhas-BA.
-                                            </p>
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            <img src="https://i.ibb.co/PvnmNKKw/100.jpg" alt="100" className="rounded-2xl w-full h-auto object-contain hover:shadow-lg transition-shadow" />
-                                            <img src="https://i.ibb.co/MkBdYQ1Z/484319138-122166789608286629-3240958178884466690-n.jpg" alt="484319138-122166789608286629-3240958178884466690-n" className="rounded-2xl w-full h-auto object-contain hover:shadow-lg transition-shadow" />
+                                        <div className="grid grid-cols-2 gap-2">
+                                            <img src="https://i.ibb.co/PvnmNKKw/100.jpg" alt="100" className="rounded-xl w-full h-auto object-cover shadow-sm" />
+                                            <img src="https://i.ibb.co/MkBdYQ1Z/484319138-122166789608286629-3240958178884466690-n.jpg" alt="484319138" className="rounded-xl w-full h-auto object-cover shadow-sm" />
                                         </div>
                                     </div>
                                 )}
                                 
                                 {!query && !activeCategory && group.category === 'Bebidas alcoólicas' && (
-                                    <div className="mb-8">
-                                        <div className="relative">
-                                            <div className="rounded-t-3xl shadow-lg overflow-hidden mt-4" style={{ backgroundColor: '#042f15' }}>
-                                                <a href="https://ibb.co/NnmnXfrP" target="_blank" rel="noopener noreferrer">
-                                                    <img src="https://i.ibb.co/Pz9zRJMn/Gemini-Generated-Image-jnbhahjnbhahjnbh.png" alt="Novas Cervejas Brussels" className="w-full h-auto block hover:scale-105 transition-transform duration-700" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/1200x300/1f2937/ffffff?text=Banner+Indisponível'; }}/>
-                                                </a>
-                                                <div style={{ height: '20px' }}></div>
-                                            </div>
-                                        </div>
-                                        <div className="wavy-top-connector rounded-b-3xl shadow-lg p-6 md:p-8 pt-10 relative z-10 bg-white">
-                                            <h3 className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-2" style={{ color: 'var(--brand-green)' }}>Brussels Puro Malte</h3>
-                                            <p className="text-center text-gray-600 mb-6 max-w-3xl mx-auto text-sm sm:text-base">A cerveja que se tornou febre nas redes sociais.</p>
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-                                                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-gray-50 border hover:shadow-md transition-shadow"><img src="https://i.ibb.co/bjWqn9kf/lager.jpg" alt="Lager" className="w-24 h-auto object-contain flex-shrink-0" /><div className="text-center sm:text-left"><h4 className="font-bold text-xl sm:text-2xl" style={{ color: 'var(--brand-green)' }}>Lager</h4><p className="text-gray-700 font-medium text-sm sm:text-base">puro malte leve e refrescante</p></div></div>
-                                                <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-gray-50 border hover:shadow-md transition-shadow"><img src="https://i.ibb.co/5hq6TQHP/ultra.jpg" alt="Ultra" className="w-24 h-auto object-contain flex-shrink-0" /><div className="text-center sm:text-left"><h4 className="font-bold text-xl sm:text-2xl" style={{ color: '#1e3a8a' }}>Ultra</h4><p className="text-gray-700 font-medium text-sm sm:text-base">Puro malte zero açúcar</p></div></div>
+                                    <div className="mb-6">
+                                        <div className="relative rounded-2xl overflow-hidden shadow-lg group">
+                                            <img src="https://i.ibb.co/Pz9zRJMn/Gemini-Generated-Image-jnbhahjnbhahjnbh.png" alt="Novas Cervejas" className="w-full h-auto block transform group-hover:scale-105 transition-transform duration-700" onError={(e) => { e.target.onerror = null; e.target.src='https://placehold.co/1200x300/1f2937/ffffff?text=Banner+Indisponível'; }}/>
+                                            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+                                                <h3 className="text-white font-bold text-lg">Novidade: Brussels</h3>
                                             </div>
                                         </div>
                                     </div>
                                 )}
 
-                                <h2 className="text-2xl sm:text-3xl font-bold text-white mb-6 flex items-center gap-4 justify-start" style={{textShadow: '1px 1px 3px rgba(0,0,0,0.5)'}}>
+                                <div className="flex items-center gap-3 mb-4 pl-2">
                                     <div className="bg-white p-2 rounded-full shadow-md">
-                                        <CategoryIcon src={CATEGORY_ICONS_DATA[group.category]?.src} alt={CATEGORY_ICONS_DATA[group.category]?.alt} isActive={false} size="w-8 h-8 sm:w-10 sm:h-10" />
+                                        <CategoryIcon src={CATEGORY_ICONS_DATA[group.category].src} alt={CATEGORY_ICONS_DATA[group.category].alt} isActive={false} size="w-8 h-8" />
                                     </div>
-                                    {group.category}
-                                </h2>
+                                    <h2 className="text-2xl font-black text-white drop-shadow-md">
+                                        {group.category}
+                                    </h2>
+                                </div>
 
-                                <div className="bg-white rounded-3xl shadow-lg p-4 sm:p-6">
+                                <div className="bg-white rounded-t-3xl rounded-b-xl shadow-xl p-2 sm:p-4 pb-6">
                                     {loading ? (
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
-                                            {Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)}
+                                        <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                                            {Array.from({ length: 3 }).map((_, i) => <ProductCardSkeleton key={i} />)}
                                         </div>
                                     ) : !group.products.length ? null : (
-                                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 md:gap-6">
+                                        <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4">
                                             {group.products.map(p => <ProductCard key={p.id} product={p} onProductClick={onProductClick} showPrices={showPrices} />)}
                                         </div>
                                     )}
@@ -991,7 +1101,7 @@
                         );
 
                         return (
-                            <div className="mb-12" key={group.category}>
+                            <div className="mb-8" key={group.category}>
                                 <div className="category-wave-wrapper">
                                     <div className="category-content">{categoryContent}</div>
                                 </div>
@@ -1000,38 +1110,34 @@
                     })}
 
                      {!loading && groupedProducts.length === 0 && (query || activeCategory) && (
-                         <div className="text-center py-16 px-6 bg-white rounded-3xl shadow-lg">
-                             <h3 className="text-3xl font-bold text-gray-700">Ops!</h3>
-                             <p className="text-gray-500 mt-2 text-lg max-w-md mx-auto">
-                                 Não encontramos nenhum produto com "{query}". Que tal tentar um termo diferente?
+                         <div className="text-center py-16 px-6 bg-white rounded-3xl shadow-lg mx-2">
+                             <div className="text-6xl mb-4">🤔</div>
+                             <h3 className="text-2xl font-bold text-gray-700">Ops!</h3>
+                             <p className="text-gray-500 mt-2 text-base max-w-md mx-auto">
+                                 Não encontramos nenhum produto com "{query}". Que tal tentar outro termo?
                              </p>
                          </div>
                     )}
                     
                     {!query && !activeCategory && (
-                        <div className="my-10">
-                            <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-lg text-center border-4 border-green-600 bg-opacity-95">
-                                <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-4" style={{color: 'var(--brand-green)'}}>
-                                    Obrigado pela sua visita!
-                                </h2>
-                                <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto text-gray-600">
-                                    Estamos prontos para atender você neste verão com os melhores produtos e preços.
-                                </p>
-                            </div>
+                        <div className="my-10 px-2 text-center">
+                            <h2 className="text-3xl font-black text-white drop-shadow-md mb-2">
+                                Fim das Ofertas!
+                            </h2>
+                            <p className="text-white opacity-90 text-sm">Mas o verão continua...</p>
                         </div>
                     )}
                 </div>
             );
         };
         
-        // --- Main App Component ---
         const App = () => {
-            const [catalog, setCatalog] = useState({ products: [], settings: { categoriesOrder: [] } });
-            const [loading, setLoading] = useState(true);
-            const [query, setQuery] = useState('');
-            const [activeCategory, setActiveCategory] = useState(null);
-            const [selectedProduct, setSelectedProduct] = useState(null);
-            const [showPrices, setShowPrices] = useState(true);
+            const [catalog, setCatalog] = React.useState({ products: [], settings: { categoriesOrder: [] } });
+            const [loading, setLoading] = React.useState(true);
+            const [query, setQuery] = React.useState('');
+            const [activeCategory, setActiveCategory] = React.useState(null);
+            const [selectedProduct, setSelectedProduct] = React.useState(null);
+            const [showPrices, setShowPrices] = React.useState(true);
 
             const handleProductClick = (product) => {
                 setSelectedProduct(product);
@@ -1041,7 +1147,7 @@
                 setSelectedProduct(null);
             };
 
-            useEffect(() => {
+            React.useEffect(() => {
                 setLoading(true);
                 api.getCatalog({ q: query, category: activeCategory }).then(data => {
                     setCatalog(data);
